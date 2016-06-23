@@ -12,7 +12,7 @@ ser = serial.Serial(
     parity=serial.PARITY_NONE,\
     stopbits=serial.STOPBITS_ONE,\
     bytesize=serial.EIGHTBITS,\
-        timeout=0)
+        timeout=None)
 
 
 def proportion(value, istart, istop, ostart, ostop):
