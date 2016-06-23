@@ -5,7 +5,7 @@ var deformedPoints = [];
 var widthPixels = 30;
 var heightPixels = 20;
 var dimension = 30;
-var radius = 150;
+var radius = 200;
 var ws;
 var xGesture, yGesture, zGesture;
 
@@ -38,15 +38,15 @@ function setup() {
       if (yGesture>46000) y = 46000;
       yGesture = map(yGesture, 38000,46000, 300,0);
 
-      zGesture = map(parseInt(data[2]), 0,10000, 0.5,1);
+      zGesture = map(parseInt(data[2]), 0,65000, -1.5, 0.1);
       
       targetX = xGesture;
       targetY = yGesture;
-      //redraw();
+
       //console.log(targetX + " " + targetY + " " + zGesture);
       
     };
-    
+    frameRate(25);
 }
 
 
@@ -62,14 +62,15 @@ function draw() {
         var d = dist(targetX, targetY, points[i].x, points[i].y);
         var x,y;
         if (d<radius) {
-            var dd = map(d, 0,radius,0,3);
-            var force = map(exp(dd), 0,20, zGesture,1.0);
+            var dd = map(d, 0,radius,zGesture,0);
+            var force = exp(-dd*dd); // Gaussian function
             x = lerp(targetX, points[i].x, force);
             y = lerp(targetY, points[i].y, force);
         } else {
             x = points[i].x;
             y = points[i].y;
         }
+
         deformedPoints.push(createVector(x,y));
     }
 
