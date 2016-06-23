@@ -4,6 +4,7 @@ from sys import stdout
 import serial
 from struct import pack
 
+filterStrength = 10
 
 ser = serial.Serial(
     #port='/dev/ttyACM0',\
@@ -14,10 +15,29 @@ ser = serial.Serial(
     bytesize=serial.EIGHTBITS,\
         timeout=None)
 
+def calculateMean(mean, listN, n):
+    del listN[0]
+    listN.append(mean)
+    mean = 0
+    for a in listN:
+        mean+=a
+    mean+=n
+    mean/=len(listN)+1
+    return mean
 
-def proportion(value, istart, istop, ostart, ostop):
-    return float(ostart) + (float(ostop) - float(ostart)) * ((float(value) - float(istart)) / (float(istop) - float(istart)))
 
+listX = []
+listY = []
+listZ = []
+
+for a in range(filterStrength):
+    listX.append(0)
+    listY.append(0)
+    listZ.append(0)
+
+meanX = 0
+meanY = 0
+meanZ = 0
 
 while True:
 
@@ -34,5 +54,10 @@ while True:
         y = (ord(data[25]) << 8) + ord(data[24])
         z = (ord(data[27]) << 8) + ord(data[26])
 
-        print str(x) + " " + str(y) + " " + str(z)
+        meanX = calculateMean(meanX, listX, x)
+        meanY = calculateMean(meanY, listY, y)
+        meanZ = calculateMean(meanZ, listZ, z)
+        
+
+        print str(meanX) + " " + str(meanY) + " " + str(meanZ)
         stdout.flush()
